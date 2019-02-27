@@ -18,16 +18,29 @@
           <div slot="tip"
                class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div>
         </el-upload>
+        <div class="vedio">
+          <video :src="vedio"
+                 controls="true"
+                 id="video"
+                 playsinline="true"
+                 style="object-fit:fill"
+                 webkit-playsinline="true"
+                 x-webkit-airplay="allow"
+                 x5-video-player-fullscreen="true"
+                 x5-video-player-type="h5"></video>
+        </div>
       </div>
     </div>
   </div>
 </template>
 
 <script>
+  import vedio from "@/assets/test.mp4";
   export default {
     name: "Experience",
     data() {
       return {
+        vedio: vedio,
         fileList: [
           {
             name: "food.jpeg",
@@ -89,6 +102,14 @@
         line-height: 56px;
         padding-left: 20px;
         font-size: 16px;
+      }
+      .operation {
+        .vedio {
+          text-align: center;
+          vedio {
+            margin: 0 auto;
+          }
+        }
       }
     }
   }
