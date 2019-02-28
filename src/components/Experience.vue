@@ -1,76 +1,91 @@
 <template>
   <div class="exp">
-    <p class="experience-type">试用演示：骨架识别</p>
+    <p class="experience-type">试用演示：{{msg}}</p>
     <div class="container">
       <p class="title">请上传测试视频</p>
       <div class="operation">
         <el-upload class="upload-demo"
-                   action="https://jsonplaceholder.typicode.com/posts/"
-                   :on-preview="handlePreview"
-                   :on-remove="handleRemove"
-                   :before-remove="beforeRemove"
+                   action="http://101.132.116.42/test_php/upload_file.php"
                    multiple
-                   :limit="3"
-                   :on-exceed="handleExceed"
+                   name="upfile"
+                   :on-error="handleError"
+                   :on-success="handleSuccess"
                    :file-list="fileList">
           <el-button size="small"
+                     style="display:none"
+                     slot="trigger"
                      type="primary">点击上传</el-button>
-          <div slot="tip"
-               class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div>
+          <el-button size="small"
+                     type="primary">点击上传</el-button>
+          <el-button style="margin-left: 10px;"
+                     size="small"
+                     type="success"
+                     @click="analyse">开始识别</el-button>
         </el-upload>
-        <div class="vedio">
-          <video :src="vedio"
-                 controls="true"
-                 id="video"
-                 playsinline="true"
-                 style="object-fit:fill"
-                 webkit-playsinline="true"
-                 x-webkit-airplay="allow"
-                 x5-video-player-fullscreen="true"
-                 x5-video-player-type="h5"></video>
-        </div>
+        <el-row class="vedio">
+          <el-col :span="12">
+            <p>原始视频</p>
+            <video :src="vedio"
+                   controls="true"
+                   class="v"
+                   playsinline="true"
+                   style="object-fit:fill"
+                   webkit-playsinline="true"
+                   x-webkit-airplay="allow"
+                   x5-video-player-fullscreen="true"
+                   x5-video-player-type="h5"></video>
+          </el-col>
+          <el-col :span="12">
+            <p>检测结果</p>
+            <video :src="vedioR"
+                   controls="true"
+                   class="v"
+                   playsinline="true"
+                   style="object-fit:fill"
+                   webkit-playsinline="true"
+                   x-webkit-airplay="allow"
+                   x5-video-player-fullscreen="true"
+                   x5-video-player-type="h5"></video>
+          </el-col>
+        </el-row>
       </div>
     </div>
   </div>
 </template>
 
 <script>
-  import vedio from "@/assets/test.mp4";
+  import flame from "@/assets/media/test_flame.mp4";
+  import smoke from "@/assets/media/test_smoke_1.mp4";
+  import flameR from "@/assets/media/result_test_flame.mp4";
+  import smokeR from "@/assets/media/result_test_smoke_1.mp4";
   export default {
     name: "Experience",
     data() {
       return {
-        vedio: vedio,
-        fileList: [
-          {
-            name: "food.jpeg",
-            url:
-              "https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100"
-          },
-          {
-            name: "food2.jpeg",
-            url:
-              "https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100"
-          }
-        ]
+        vedio: "",
+        vedioR: "",
+        msg: "",
+        fileList: []
       };
     },
     methods: {
-      handleRemove(file, fileList) {
-        console.log(file, fileList);
+      handleError(err, file, fileList) {
+        console.log(err);
       },
-      handlePreview(file) {
-        console.log(file);
+      handleSuccess(res, file, fileList) {
+        console.log(res);
       },
-      handleExceed(files, fileList) {
-        this.$message.warning(
-          `当前限制选择 3 个文件，本次选择了 ${
-            files.length
-          } 个文件，共选择了 ${files.length + fileList.length} 个文件`
-        );
-      },
-      beforeRemove(file, fileList) {
-        return this.$confirm(`确定移除 ${file.name}？`);
+      analyse() {}
+    },
+    created() {
+      if (this.$route.query.type == 1) {
+        this.msg = "火焰识别";
+        this.vedio = flame;
+        this.vedioR = flameR;
+      } else if (this.$route.query.type == 2) {
+        this.msg = "烟雾识别";
+        this.vedio = smoke;
+        this.vedioR = smokeR;
       }
     }
   };
@@ -102,12 +117,16 @@
         line-height: 56px;
         padding-left: 20px;
         font-size: 16px;
+        margin: 0px;
       }
       .operation {
+        padding: 20px 10px;
         .vedio {
           text-align: center;
-          vedio {
+          margin-top: 20px;
+          .v {
             margin: 0 auto;
+            width: 90%;
           }
         }
       }

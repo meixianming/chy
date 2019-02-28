@@ -1,22 +1,21 @@
 <template>
   <div class="container">
-    <img src="../assets/bg.png"
-         class="bg" />
     <el-row class="main">
+      <p class="title">识别火焰</p>
       <el-col :span="15">
         <div class="grid-content">
           <el-carousel :interval="40000"
-                       @change="change"
+                       @change="changeFlame"
                        type="card"
                        height="450px">
-            <el-carousel-item v-for="(item,index) in imgList"
+            <el-carousel-item v-for="(item,index) in flameList"
                               :key="index">
               <img :src="item" />
             </el-carousel-item>
           </el-carousel>
           <br />
           <el-button type="primary"
-                     @click="goExp">免费体验</el-button>
+                     @click="goExp(1)">免费体验</el-button>
         </div>
       </el-col>
       <el-col :span="9">
@@ -24,10 +23,38 @@
           <p class="title">分析结果</p>
           <el-row class="img"
                   :gutter="20">
-            <el-col :span="8"
-                    v-for="(item,index) in resultImgList"
-                    :key="index">
+            <el-col :span="8">
+              <img :src="flameResult" />
+            </el-col>
+          </el-row>
+        </div>
+      </el-col>
+    </el-row>
+    <el-row class="main">
+      <p class="title">烟雾识别</p>
+      <el-col :span="15">
+        <div class="grid-content">
+          <el-carousel :interval="40000"
+                       @change="changeSmoke"
+                       type="card"
+                       height="450px">
+            <el-carousel-item v-for="(item,index) in smokeList"
+                              :key="index">
               <img :src="item" />
+            </el-carousel-item>
+          </el-carousel>
+          <br />
+          <el-button type="primary"
+                     @click="goExp(2)">免费体验</el-button>
+        </div>
+      </el-col>
+      <el-col :span="9">
+        <div class="grid-content result">
+          <p class="title">分析结果</p>
+          <el-row class="img"
+                  :gutter="20">
+            <el-col :span="8">
+              <img :src="smokeResult" />
             </el-col>
           </el-row>
         </div>
@@ -37,46 +64,56 @@
 </template>
 
 <script>
-  import img1 from "@/assets/1.png";
-  import img2 from "@/assets/2.png";
-  import img3 from "@/assets/3.png";
-  import img4 from "@/assets/4.png";
-  import img_1 from "@/assets/_1.png";
-  import img_2 from "@/assets/_2.png";
-  import img_3 from "@/assets/_3.png";
-  import img_4 from "@/assets/_4.png";
-  import img1_1 from "@/assets/1-1.png";
-  import img2_1 from "@/assets/2-1.png";
-  import img3_1 from "@/assets/3-1.png";
-  import img3_2 from "@/assets/3-2.png";
-  import img4_1 from "@/assets/4-1.png";
-  import img4_2 from "@/assets/4-2.png";
-  import img4_3 from "@/assets/4-3.png";
+  import flame1 from "@/assets/img/flame_1.png";
+  import flame1R from "@/assets/img/flame_1_r.png";
+  import flame2 from "@/assets/img/flame_2.png";
+  import flame2R from "@/assets/img/flame_2_r.png";
+  import flame3 from "@/assets/img/flame_3.png";
+  import flame3R from "@/assets/img/flame_3_r.png";
+  import flame4 from "@/assets/img/flame_4.png";
+  import flame4R from "@/assets/img/flame_4_r.png";
+  import somke1 from "@/assets/img/smoke1.png";
+  import smoke1R from "@/assets/img/smoke1_r.png";
+  import somke2 from "@/assets/img/smoke2.png";
+  import smoke2R from "@/assets/img/smoke2_r.png";
+  import somke3 from "@/assets/img/smoke3.png";
+  import smoke3R from "@/assets/img/smoke3_r.png";
   export default {
     name: "Index",
     data() {
       return {
-        index: 0,
-        orginImg: [img1, img2, img3, img4],
-        selectedImg: [img_1, img_2, img_3, img_4],
-        imgList: [img_1, img2, img3, img4],
-        list: [[img1_1], [img2_1], [img3_1, img3_2], [img4_1, img4_2, img4_3]],
-        resultImgList: [img1_1]
+        flameIndex: 0,
+        smokeIndex: 0,
+        flameList: [flame1, flame2, flame3, flame4],
+        smokeList: [somke1, somke2, somke3],
+        flameResultList: [flame1R, flame2R, flame3R, flame4R],
+        flameResult: flame1R,
+        smokeResultList: [smoke1R, smoke2R, smoke3R],
+        smokeResult: smoke1R
       };
     },
     watch: {
-      index(newVal, oldVal) {
-        this.imgList.splice(oldVal, 1, this.orginImg[oldVal]);
-        this.imgList.splice(newVal, 1, this.selectedImg[newVal]);
-        this.resultImgList = this.list[newVal];
+      flameIndex(newVal) {
+        this.flameResult = this.flameResultList[newVal];
+      },
+      smokeIndex(newVal) {
+        this.smokeResult = this.smokeResultList[newVal];
       }
     },
     methods: {
-      change(index) {
-        this.index = index;
+      changeFlame(index) {
+        this.flameIndex = index;
       },
-      goExp() {
-        this.$router.push("./experience");
+      changeSmoke(index) {
+        this.smokeIndex = index;
+      },
+      goExp(index) {
+        this.$router.push({
+          path: "./experience",
+          query: {
+            type: index
+          }
+        });
       }
     }
   };
@@ -100,6 +137,7 @@
     .main {
       color: #fff;
       padding: 50px 0px;
+      border-bottom: 1px solid #4c4c4c;
       .el-col {
         position: relative;
         .result {
